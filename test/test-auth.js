@@ -172,19 +172,19 @@ describe('Auth endpoints', function () {
             firstName,
             lastName
           },
+          exp: Math.floor(Date.now() / 1000) - 10 // Expired ten seconds ago
         },
         JWT_SECRET,
         {
           algorithm: 'HS256',
-          subject: username,
-          expiresIn: Math.floor(Date.now() / 1000) - 10 // Expired ten seconds ago
+          subject: username
         }
       );
 
       return chai
         .request(app)
         .post('/api/auth/refresh')
-        .set('authorization', `Bearer ${token}`)
+        .set('Authorization', `Bearer ${token}`)
         .then(() =>
           expect.fail(null, null, 'Request should not succeed')
         )

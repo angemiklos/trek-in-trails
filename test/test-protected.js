@@ -112,7 +112,7 @@ describe('Protected endpoint', function () {
       return chai
         .request(app)
         .get('/api/protected')
-        .set('authorization', `Bearer ${token}`)
+        .set('Authorization', `Bearer ${token}`)
         .then(() =>
           expect.fail(null, null, 'Request should not succeed')
         )

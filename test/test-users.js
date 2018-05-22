@@ -272,18 +272,18 @@ describe('/api/user', function () {
             expect(res).to.have.status(422);
             expect(res.body.reason).to.equal('ValidationError');
             expect(res.body.message).to.equal(
-              'Must be at least 1 characters long'
+              'Must be at least 4 characters long'
             );
             expect(res.body.location).to.equal('username');
           });
       });
-      it('Should reject users with password less than ten characters', function () {
+      it('Should reject users with password less than six characters', function () {
         return chai
           .request(app)
           .post('/api/users')
           .send({
             username,
-            password: '123456789',
+            password: '12345',
             firstName,
             lastName
           })
@@ -299,18 +299,18 @@ describe('/api/user', function () {
             expect(res).to.have.status(422);
             expect(res.body.reason).to.equal('ValidationError');
             expect(res.body.message).to.equal(
-              'Must be at least 10 characters long'
+              'Must be at least 6 characters long'
             );
             expect(res.body.location).to.equal('password');
           });
       });
-      it('Should reject users with password greater than 72 characters', function () {
+      it('Should reject users with password greater than 12 characters', function () {
         return chai
           .request(app)
           .post('/api/users')
           .send({
             username,
-            password: new Array(73).fill('a').join(''),
+            password: new Array(13).fill('a').join(''),
             firstName,
             lastName
           })
@@ -326,7 +326,7 @@ describe('/api/user', function () {
             expect(res).to.have.status(422);
             expect(res.body.reason).to.equal('ValidationError');
             expect(res.body.message).to.equal(
-              'Must be at most 72 characters long'
+              'Must be at most 12 characters long'
             );
             expect(res.body.location).to.equal('password');
           });

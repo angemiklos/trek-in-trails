@@ -2,36 +2,30 @@
   "name": "trek-in-trails",
   "version": "1.0.0",
   "description": "Hiking Trails",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "start": "node server.js",
     "test": "mocha --exit"
   },
   "keywords": [],
-  "author": "Ange Miklos",
+  "author": "",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.0",
     "body-parser": "^1.15.2",
     "dotenv": "^4.0.0",
-    "express": "^4.16.3",
+    "express": "^4.14.0",
     "jsonwebtoken": "^8.2.0",
     "mongoose": "^5.0.6",
     "morgan": "^1.7.0",
-    "node": "^10.1.0",
-    "node_js": "^0.1.0",
     "passport": "^0.3.2",
-    "passport-jwt": "^2.2.1",
+    "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/angemiklos/trek-in-trails.git"
   },
   "devDependencies": {
     "chai": "^4.0.1",
     "chai-http": "^3.0.0",
     "faker": "^3.1.0",
-    "mocha": "^4.1.0"
+    "mocha": "^4.0.1"
   }
 }

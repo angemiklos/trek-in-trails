@@ -1,8 +1,8 @@
 {
   "name": "trek-in-trails",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Hiking Trails",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "test": "mocha --exit"
@@ -18,9 +18,15 @@
     "jsonwebtoken": "^8.2.0",
     "mongoose": "^5.0.6",
     "morgan": "^1.7.0",
+    "node": "^10.1.0",
+    "node_js": "^0.1.0",
     "passport": "^0.3.2",
     "passport-jwt": "^2.2.1",
     "passport-local": "^1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angemiklos/trek-in-trails.git"
   },
   "devDependencies": {
     "chai": "^4.0.1",

@@ -2,3 +2,11 @@ language: node_js
 node_js: node
 services:
 - mongodb
+deploy:
+  provider: heroku
+  api_key:
+    secure: Jw20KRLwSOfARWKxTob/SzzoGTBuSNoUXw5QcwI8/mlagUWT0LPEgznNj/4kLwaYHJE6nrVbvbaAJAPzLBW4mY1ppbKSf0RyFJw4PB0OO8ReGATch4WOvp/VnhWude1VdyxYExnWig3wiLgdfbWQ8QK1WOAOnoU6pY2Je8kzc4E/T02nS8jNcPuHfip0g9Nez+A2jYpiC5nLKNgmFVzu7yzfkWC1jdIi6rNRUllRk24ua1Ry6+xICxTmfDejnCP5x6ZeQZredagvLXA1oDIy31DcsBFhj8fHoqES5Fzk1Z0WcNzRbrrllevZmdSE5B79pCLwcUDZMAwErA+pdVLt1yPpB6aap+TBS5A1YRdJ4+pVq1xpOJz4L0AoJ99VS57VPvqdq8OX/HKGX2rtniFq1eJe7Bok46KYhoeSgnXcooNIyJ1/PqBTmT6Q+x/Xa0p5heXMkUJGjg+3T2Xn9tSP5qTPU3gksynP0EnQ7tMTf3KD0DgOlCMFpw7gw6RnA3riiV0diSkrWB2h1RpxJl310t4TzY0NTOs413eIByMRcoZ9GORQZ1avMHTeF5zn+ZWaWBCW+bMU8QtGGnlOl/RQo1qDpw2NEzgEgr9VwxbH9FXzs5m9ClHdVwK4b5KgklWuongZNzBt1zfE8IYgRX94133IcVVwZSXTrvi+ebHuTzs=
+  app: trekintrails
+  skip_cleanup: true
+  on:
+    repo: angemiklos/trek-in-trails

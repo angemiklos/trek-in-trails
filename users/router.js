@@ -10,7 +10,7 @@ const jsonParser = bodyParser.json();
 
 // Post to register a new user
 router.post('/', jsonParser, (req, res) => {
-  const requiredFields = ['username', 'password'];
+  const requiredFields = ['nickname', 'username', 'password'];
   const missingField = requiredFields.find(field => !(field in req.body));
 
   if (missingField) {
@@ -22,7 +22,7 @@ router.post('/', jsonParser, (req, res) => {
     });
   }
 
-  const stringFields = ['username', 'password', 'firstName', 'lastName'];
+  const stringFields = ['nickname', 'username', 'password', 'prefCity', 'prefState'];
   const nonStringField = stringFields.find(
     field => field in req.body && typeof req.body[field] !== 'string'
   );
@@ -43,7 +43,7 @@ router.post('/', jsonParser, (req, res) => {
   // trimming them and expecting the user to understand.
   // We'll silently trim the other fields, because they aren't credentials used
   // to log in, so it's less of a problem.
-  const explicityTrimmedFields = ['username', 'password'];
+  const explicityTrimmedFields = ['nickname', 'username', 'password', 'prefCity'];
   const nonTrimmedField = explicityTrimmedFields.find(
     field => req.body[field].trim() !== req.body[field]
   );
@@ -58,8 +58,12 @@ router.post('/', jsonParser, (req, res) => {
   }
 
   const sizedFields = {
+    nickname: {
+      min: 2
+    },
+    // x@x.com
     username: {
-      min: 4
+      min: 7
     },
     password: {
       min: 6,
@@ -92,11 +96,7 @@ router.post('/', jsonParser, (req, res) => {
     });
   }
 
-  let {username, password, firstName = '', lastName = ''} = req.body;
-  // Username and password come in pre-trimmed, otherwise we throw an error
-  // before this
-  firstName = firstName.trim();
-  lastName = lastName.trim();
+  let {nickname, username, password, email, prefCity, prefState} = req.body;
 
   return User.find({username})
     .count()
@@ -113,12 +113,30 @@ router.post('/', jsonParser, (req, res) => {
       // If there is no existing user, hash the password
       return User.hashPassword(password);
     })
+    .then( hash => {
+      User.find({nickname})
+      .count()
+      .then(count => {
+        if (count > 0) {
+          // There is an existing user with the same nickname
+          return Promise.reject({
+            code: 422,
+            reason: 'ValidationError',
+            message: 'Nickname already taken',
+            location: 'nickname'
+          });
+        }
+        return hash;
+      })
+    })
     .then(hash => {
       return User.create({
+        nickname,
         username,
         password: hash,
-        firstName,
-        lastName
+        email,
+        prefCity,
+        prefState
       });
     })
     .then(user => {
@@ -138,10 +156,10 @@ router.post('/', jsonParser, (req, res) => {
 // we're just doing this so we have a quick way to see
 // if we're creating users. keep in mind, you can also
 // verify this in the Mongo shell.
-router.get('/', (req, res) => {
-  return User.find()
-    .then(users => res.json(users.map(user => user.serialize())))
-    .catch(err => res.status(500).json({message: 'Internal server error'}));
-});
+//router.get('/', (req, res) => {
+//  return User.find()
+//    .then(users => res.json(users.map(user => user.serialize())))
+//    .catch(err => res.status(500).json({message: 'Internal server error'}));
+//});
 
 module.exports = {router};

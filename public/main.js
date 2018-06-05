@@ -1,6 +1,6 @@
 var slideshowIndex = 0;
-const LOGIN_URL = "localhost:8080/api/auth/login"
-const NEW_USER_URL = "localhost:8080/api/users"
+const LOGIN_URL = "https://trekintrails.herokuapp.com/api/auth/login"
+const NEW_USER_URL = "https://trekintrails.herokuapp.com/api/users"
 
 function displayHomePage(res) {
     console.log("HOME PAGE");

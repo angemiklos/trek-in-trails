@@ -1,14 +1,15 @@
 var slideshowIndex = 0;
-const LOGIN_URL = "https://trekintrails.herokuapp.com/api/auth/login"
-const NEW_USER_URL = "https://trekintrails.herokuapp.com/api/users"
+const LOGIN_URL = "/api/auth/login"
+const NEW_USER_URL = "/api/users"
 
 function displayHomePage(res) {
     console.log("HOME PAGE");
-    console.log("User Found: " + res.body.nickname);
-    console.log("User Found: " + res.body.username);
-    console.log("User Found: " + res.body.email);
-    console.log("User Found: " + res.body.prefCity);
-    console.log("User Found: " + res.body.prefState);
+    console.log(res);
+    // console.log("User Found: " + res.body.nickname);
+    // console.log("User Found: " + res.body.username);
+    // console.log("User Found: " + res.body.email);
+    // console.log("User Found: " + res.body.prefCity);
+    // console.log("User Found: " + res.body.prefState);
 
 }
 
@@ -22,7 +23,7 @@ function verifySignin() {
 
     
     let signin = {
-            "username"    : $("[type='email']").val(),
+            "username" : $("[type='email']").val(),
             "password" : $("[type='password']").val()
     };
 
@@ -31,11 +32,15 @@ function verifySignin() {
     $.ajax({
         type: "POST",
         url: LOGIN_URL,
-        data: signin,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: JSON.stringify(signin),
         success: function(data) {
             //show content
             alert('Success!');
-            displayHomePage(res);
+            localStorage.setItem("authToken", data.authToken)
+            displayHomePage(data);
         },
         error: function(jqXHR, textStatus, err) {
             //show error message
@@ -51,8 +56,8 @@ function verifySignup() {
 
     let signup = {
         "nickname" : $("#js-nickname").val(),
-        "username" : $("[type='email']").val(),
-        "password" : $("[type='password']").val(),
+        "username" : $("#js-username").val(),
+        "password" : $("#js-password").val(),
         "prefCity" : $("#js-city").val(),
         "prefState" : $("#js-state").val()
     };
@@ -64,15 +69,19 @@ function verifySignup() {
                     signup.prefCity + " " + 
                     signup.prefState 
                 );
+    console.log(signup);
 
     $.ajax({
         type: "POST",
         url: NEW_USER_URL,
-        data: signup,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: JSON.stringify(signup),
         success: function(data) {
             //show content
             alert('Success!');
-            displayHomePage(res);
+            displayHomePage(data);
         },
         error: function(jqXHR, textStatus, err) {
             //show error message

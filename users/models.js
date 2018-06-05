@@ -15,11 +15,11 @@ const UserSchema = mongoose.Schema({
 
 UserSchema.methods.serialize = function() {
   return {
-    nickname:  this.nickname  || '',
-    username:  this.username  || '',
-    email:     this.email     || '',
-    prefCity:  this.firstName || '',
-    prefState: this.lastName  || ''
+    nickname:  this.nickname   || '',
+    username:  this.username   || '',
+    email:     this.email      || '',
+    prefCity:  this.prefCity   || '',
+    prefState: this.prefState  || ''
   };
 };
 

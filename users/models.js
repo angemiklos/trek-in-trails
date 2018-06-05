@@ -5,24 +5,21 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 const UserSchema = mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  firstName: {type: String, default: ''},
-  lastName: {type: String, default: ''}
+  nickname:  {type: String, required: true},
+  username:  {type: String, required: true, unique: true},
+  password:  {type: String, required: true},
+  email:     {type: String, default: this.username},
+  prefCity:  {type: String, default: ''},
+  prefState: {type: String, default: ''}
 });
 
 UserSchema.methods.serialize = function() {
   return {
-    username: this.username || '',
-    firstName: this.firstName || '',
-    lastName: this.lastName || ''
+    nickname:  this.nickname   || '',
+    username:  this.username   || '',
+    email:     this.email      || '',
+    prefCity:  this.prefCity   || '',
+    prefState: this.prefState  || ''
   };
 };
 

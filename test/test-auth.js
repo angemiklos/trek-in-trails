@@ -16,10 +16,12 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 
 describe('Auth endpoints', function () {
-  const username = 'exampleUser';
+  const nickname = 'exampleName';
+  const username = 'exampleUser@gmail.com';
+  const email = 'exampleUser@gmail.com';
   const password = 'examplePass';
-  const firstName = 'Example';
-  const lastName = 'User';
+  const prefCity = 'Phoenix';
+  const prefState = 'Arizona';
 
   before(function () {
     return runServer(TEST_DATABASE_URL);
@@ -32,10 +34,12 @@ describe('Auth endpoints', function () {
   beforeEach(function () {
     return User.hashPassword(password).then(password =>
       User.create({
+        nickname,
         username,
         password,
-        firstName,
-        lastName
+        email,
+        prefCity,
+        prefState
       })
     );
   });
@@ -99,7 +103,7 @@ describe('Auth endpoints', function () {
       return chai
         .request(app)
         .post('/api/auth/login')
-        .send({ username, password })
+        .send({ nickname, username, password, prefCity, prefState })
         .then(res => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.an('object');
@@ -109,9 +113,11 @@ describe('Auth endpoints', function () {
             algorithm: ['HS256']
           });
           expect(payload.user).to.deep.equal({
+            nickname,
             username,
-            firstName,
-            lastName
+            email,
+            prefCity,
+            prefState
           });
         });
     });
@@ -137,9 +143,11 @@ describe('Auth endpoints', function () {
     it('Should reject requests with an invalid token', function () {
       const token = jwt.sign(
         {
+          nickname,
           username,
-          firstName,
-          lastName
+          email,
+          prefCity,
+          prefState
         },
         'wrongSecret',
         {
@@ -168,9 +176,11 @@ describe('Auth endpoints', function () {
       const token = jwt.sign(
         {
           user: {
+            nickname,
             username,
-            firstName,
-            lastName
+            email,
+            prefCity,
+            prefState
           },
           exp: Math.floor(Date.now() / 1000) - 10 // Expired ten seconds ago
         },
@@ -201,9 +211,11 @@ describe('Auth endpoints', function () {
       const token = jwt.sign(
         {
           user: {
+            nickname,
             username,
-            firstName,
-            lastName
+            email,
+            prefCity,
+            prefState
           }
         },
         JWT_SECRET,
@@ -228,9 +240,11 @@ describe('Auth endpoints', function () {
             algorithm: ['HS256']
           });
           expect(payload.user).to.deep.equal({
+            nickname,
             username,
-            firstName,
-            lastName
+            email,
+            prefCity,
+            prefState
           });
           expect(payload.exp).to.be.at.least(decoded.exp);
         });

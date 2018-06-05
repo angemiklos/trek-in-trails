@@ -15,14 +15,18 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 
 describe('/api/user', function () {
-  const username = 'exampleUser';
+  const nickname = 'exampleName';
+  const username = 'exampleUser@gmail.com';
+  const email = 'exampleUser@gmail.com';
   const password = 'examplePass';
-  const firstName = 'Example';
-  const lastName = 'User';
-  const usernameB = 'exampleUserB';
+  const prefCity = 'Phoenix';
+  const prefState = 'Arizona';
+  const nicknameB = 'exampleNameB';
+  const usernameB = 'exampleUserB@gmail.com';
+  const emailB = 'exampleUserB@gmail.com';
   const passwordB = 'examplePassB';
-  const firstNameB = 'ExampleB';
-  const lastNameB = 'UserB';
+  const prefCityB = 'Denver';
+  const prefStateB = 'Colorado';
 
   before(function () {
     return runServer(TEST_DATABASE_URL);
@@ -45,9 +49,10 @@ describe('/api/user', function () {
           .request(app)
           .post('/api/users')
           .send({
+            nickname,
             password,
-            firstName,
-            lastName
+            prefCity,
+            prefState
           })
           .then(() =>
             expect.fail(null, null, 'Request should not succeed')
@@ -69,9 +74,10 @@ describe('/api/user', function () {
           .request(app)
           .post('/api/users')
           .send({
+            nickname,
             username,
-            firstName,
-            lastName
+            prefCity,
+            prefState
           })
           .then(() =>
             expect.fail(null, null, 'Request should not succeed')
@@ -93,10 +99,11 @@ describe('/api/user', function () {
           .request(app)
           .post('/api/users')
           .send({
+            nickname,
             username: 1234,
             password,
-            firstName,
-            lastName
+            prefCity,
+            prefState
           })
           .then(() =>
             expect.fail(null, null, 'Request should not succeed')
@@ -120,10 +127,11 @@ describe('/api/user', function () {
           .request(app)
           .post('/api/users')
           .send({
+            nickname,
             username,
             password: 1234,
-            firstName,
-            lastName
+            prefCity,
+            prefState
           })
           .then(() =>
             expect.fail(null, null, 'Request should not succeed')
@@ -142,15 +150,16 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('password');
           });
       });
-      it('Should reject users with non-string first name', function () {
+      it('Should reject users with non-string nickname', function () {
         return chai
           .request(app)
           .post('/api/users')
           .send({
+            nickname: 1234,
             username,
             password,
-            firstName: 1234,
-            lastName
+            prefCity,
+            prefState
           })
           .then(() =>
             expect.fail(null, null, 'Request should not succeed')
@@ -166,18 +175,19 @@ describe('/api/user', function () {
             expect(res.body.message).to.equal(
               'Incorrect field type: expected string'
             );
-            expect(res.body.location).to.equal('firstName');
+            expect(res.body.location).to.equal('nickname');
           });
       });
-      it('Should reject users with non-string last name', function () {
+      it('Should reject users with non-string city name', function () {
         return chai
           .request(app)
           .post('/api/users')
           .send({
+            nickname,
             username,
             password,
-            firstName,
-            lastName: 1234
+            prefCity: 1234,
+            prefState
           })
           .then(() =>
             expect.fail(null, null, 'Request should not succeed')
@@ -193,7 +203,7 @@ describe('/api/user', function () {
             expect(res.body.message).to.equal(
               'Incorrect field type: expected string'
             );
-            expect(res.body.location).to.equal('lastName');
+            expect(res.body.location).to.equal('prefCity');
           });
       });
       it('Should reject users with non-trimmed username', function () {
@@ -201,10 +211,11 @@ describe('/api/user', function () {
           .request(app)
           .post('/api/users')
           .send({
+            nickname,
             username: ` ${username} `,
             password,
-            firstName,
-            lastName
+            prefCity,
+            prefState
           })
           .then(() =>
             expect.fail(null, null, 'Request should not succeed')
@@ -228,10 +239,11 @@ describe('/api/user', function () {
           .request(app)
           .post('/api/users')
           .send({
+            nickname,
             username,
             password: ` ${password} `,
-            firstName,
-            lastName
+            prefCity,
+            prefState
           })
           .then(() =>
             expect.fail(null, null, 'Request should not succeed')
@@ -255,10 +267,11 @@ describe('/api/user', function () {
           .request(app)
           .post('/api/users')
           .send({
+            nickname,
             username: '',
             password,
-            firstName,
-            lastName
+            prefCity,
+            prefState
           })
           .then(() =>
             expect.fail(null, null, 'Request should not succeed')
@@ -272,7 +285,7 @@ describe('/api/user', function () {
             expect(res).to.have.status(422);
             expect(res.body.reason).to.equal('ValidationError');
             expect(res.body.message).to.equal(
-              'Must be at least 4 characters long'
+              'Must be at least 7 characters long'
             );
             expect(res.body.location).to.equal('username');
           });
@@ -282,10 +295,11 @@ describe('/api/user', function () {
           .request(app)
           .post('/api/users')
           .send({
+            nickname,
             username,
             password: '12345',
-            firstName,
-            lastName
+            prefCity,
+            prefState
           })
           .then(() =>
             expect.fail(null, null, 'Request should not succeed')
@@ -309,10 +323,11 @@ describe('/api/user', function () {
           .request(app)
           .post('/api/users')
           .send({
+            nickname,
             username,
             password: new Array(13).fill('a').join(''),
-            firstName,
-            lastName
+            prefCity,
+            prefState
           })
           .then(() =>
             expect.fail(null, null, 'Request should not succeed')
@@ -334,18 +349,21 @@ describe('/api/user', function () {
       it('Should reject users with duplicate username', function () {
         // Create an initial user
         return User.create({
+          nickname,
           username,
           password,
-          firstName,
-          lastName
+          email,
+          prefCity,
+          prefState
         })
           .then(() =>
             // Try to create a second user with the same username
             chai.request(app).post('/api/users').send({
+              nickname,
               username,
               password,
-              firstName,
-              lastName
+              prefCity,
+              prefState
             })
           )
           .then(() =>
@@ -370,65 +388,76 @@ describe('/api/user', function () {
           .request(app)
           .post('/api/users')
           .send({
+            nickname,
             username,
             password,
-            firstName,
-            lastName
+            prefCity,
+            prefState
           })
           .then(res => {
             expect(res).to.have.status(201);
             expect(res.body).to.be.an('object');
             expect(res.body).to.have.keys(
+              'nickname',
               'username',
-              'firstName',
-              'lastName'
+              'email',
+              'prefCity',
+              'prefState'
             );
+            expect(res.body.nickname).to.equal(nickname);
             expect(res.body.username).to.equal(username);
-            expect(res.body.firstName).to.equal(firstName);
-            expect(res.body.lastName).to.equal(lastName);
+            expect(res.body.email).to.equal(email);
+            expect(res.body.prefCity).to.equal(prefCity);
+            expect(res.body.prefState).to.equal(prefState);
             return User.findOne({
               username
             });
           })
           .then(user => {
             expect(user).to.not.be.null;
-            expect(user.firstName).to.equal(firstName);
-            expect(user.lastName).to.equal(lastName);
+            expect(user.nickname).to.equal(nickname);
+            expect(user.email).to.equal(email);
+            expect(user.prefCity).to.equal(prefCity);
+            expect(user.prefState).to.equal(prefState);
             return user.validatePassword(password);
           })
           .then(passwordIsCorrect => {
             expect(passwordIsCorrect).to.be.true;
           });
       });
-      it('Should trim firstName and lastName', function () {
+      it('Should trim city name', function () {
         return chai
           .request(app)
           .post('/api/users')
           .send({
+            nickname,
             username,
             password,
-            firstName: ` ${firstName} `,
-            lastName: ` ${lastName} `
+            prefCity: ` ${prefCity} `,
+            prefState
           })
           .then(res => {
             expect(res).to.have.status(201);
             expect(res.body).to.be.an('object');
             expect(res.body).to.have.keys(
+              'nickname',
               'username',
-              'firstName',
-              'lastName'
+              'email',
+              'prefCity',
+              'prefState'
             );
+            expect(res.body.nickname).to.equal(nickname);
             expect(res.body.username).to.equal(username);
-            expect(res.body.firstName).to.equal(firstName);
-            expect(res.body.lastName).to.equal(lastName);
+            expect(res.body.email).to.equal(email);
+            expect(res.body.prefCity).to.equal(prefCity);
+            expect(res.body.prefState).to.equal(prefState);
             return User.findOne({
               username
             });
           })
           .then(user => {
             expect(user).to.not.be.null;
-            expect(user.firstName).to.equal(firstName);
-            expect(user.lastName).to.equal(lastName);
+            expect(user.prefCity).to.equal(prefCity);
           });
       });
     });
@@ -444,16 +473,20 @@ describe('/api/user', function () {
       it('Should return an array of users', function () {
         return User.create(
           {
+            nickname,
             username,
             password,
-            firstName,
-            lastName
+            email,
+            prefCity,
+            prefState
           },
           {
+            nickname: nicknameB,
             username: usernameB,
             password: passwordB,
-            firstName: firstNameB,
-            lastName: lastNameB
+            email   : emailB,
+            prefCity: prefCityB,
+            prefState: prefStateB
           }
         )
           .then(() => chai.request(app).get('/api/users'))
@@ -462,15 +495,19 @@ describe('/api/user', function () {
             expect(res.body).to.be.an('array');
             expect(res.body).to.have.length(2);
             expect(res.body[0]).to.deep.equal({
+              nickname,
               username,
-              firstName,
-              lastName
+              email,
+              prefCity,
+              prefState
             });
             expect(res.body[1]).to.deep.equal({
+              nickname: nicknameB,
               username: usernameB,
-              firstName: firstNameB,
-              lastName: lastNameB
-            });
+              email: emailB,
+              prefCity: prefCityB,
+              prefState: prefStateB
+              });
           });
       });
     });

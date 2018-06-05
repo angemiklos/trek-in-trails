@@ -40,8 +40,14 @@ passport.use(jwtStrategy);
 
 app.use('/api/users/', usersRouter);
 app.use('/api/auth/', authRouter);
+app.use(express.static('public'));
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
+
+// add a static file service get
+app.get('/',(req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+});
 
 // A protected endpoint which needs a valid JWT to access it
 app.get('/api/protected', jwtAuth, (req, res) => {

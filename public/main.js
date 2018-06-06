@@ -97,8 +97,6 @@ function displaySignin(){
 
     $("#js-signin").prop("hidden",false);
     $("#js-signup").prop("hidden",true);
-    $("#js-signin-page").prop("hidden",true);
-    $("#js-signup-page").prop("hidden",false);
 }
 
 function displaySignup(){
@@ -112,26 +110,26 @@ function displaySignup(){
     // when the sign up button is pressed, verify the info
     $("#js-signup").on("submit", verifySignup);
 
-    $("#js-signin-page").prop("hidden",false);
-    $("#js-signup-page").prop("hidden",true);
-
     $("#js-signin-page").on("click", displaySignin);
 }
 
 function slideshow() {
 
-    var imgs = $(".bkg-images").get();
+    var fadedImgs = $(".bkg-images").get();
+    var vividImgs = $(".fg-images").get();
 
-    for (var i = 0; i < imgs.length; i++) {
-        imgs[i].style.display = "none";  
+    for (var i = 0; i < fadedImgs.length; i++) {
+        fadedImgs[i].style.display = "none";  
+        vividImgs[i].style.display = "none";  
     }
 
     slideshowIndex++;
-    if (slideshowIndex > imgs.length) {
+    if (slideshowIndex > fadedImgs.length) {
         slideshowIndex = 1;
     }    
 
-    imgs[slideshowIndex-1].style.display = "block";  
+    fadedImgs[slideshowIndex-1].style.display = "block";  
+    vividImgs[slideshowIndex-1].style.display = "block";  
     setTimeout(slideshow, 5000); // Change image every 5 seconds
 }
 

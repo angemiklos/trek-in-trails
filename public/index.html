@@ -13,15 +13,21 @@
     <script src="main.js"></script>
     </head>
 <body>
-    <header role="banner" class="js-banner row">
-        <h1>TrekInTrails - <em>keep track of all your favorite hikes</em></h1>
-    </header>
+    <div role="banner" class="js-banner col-12">
+        <h1>TrekInTrails</h1>
+        <h2><em>keep track of all your favorite hikes</em></h2>
+    </div>
     <main>
         <div class="col-12" aria-live="polite">
-            <div aria-roledescription="transitioning images" class="images">
-                <img class="bkg-images" src="images/FromCell 097.jpg" alt="hikers 1">
-                <img class="bkg-images" src="images/0531101347.jpg" alt="hikers 2">
-                <img class="bkg-images" src="images/p151.jpg" alt="hikers 3">
+            <img class="bkg-images" src="images/FromCell 097.jpg" alt="hikers 1">
+            <img class="bkg-images" src="images/0531101347.jpg" alt="hikers 2">
+            <img class="bkg-images" src="images/p151.jpg" alt="hikers 3">
+            <div class="rel-image">
+                <div aria-roledescription="transitioning images" class="images">
+                    <img class="fg-images" src="images/FromCell 097.jpg" alt="hikers 1">
+                    <img class="fg-images" src="images/0531101347.jpg" alt="hikers 2">
+                    <img class="fg-images" src="images/p151.jpg" alt="hikers 3">
+                </div>
             </div>
             <div>
                 <form action="" id="js-signin">
@@ -33,6 +39,9 @@
                         <input type="password" name="password" placeholder="password" minlength=6 maxlength=11 required><br>
                         <input type="submit" value="Login">
                     </fieldset>
+                    <div id="js-signup-page">
+                        <p>Don't have an account?&nbsp<a href="">Sign Up</a></p>   
+                    </div>
                 </form>  
                 <form action="" id="js-signup" hidden>
                     <fieldset>
@@ -102,13 +111,10 @@
                         </select><br>				 
                         <input type="submit" value="Enter">
                     </fieldset>
+                    <div id="js-signin-page">
+                        <p>Have an account?&nbsp<a href="">Sign In</a></p>   
+                    </div>
                 </form>  
-            </div>
-            <div id="js-signup-page" >
-                <p>Don't have an account?&nbsp<a href="">Sign Up</a></p>   
-            </div>
-            <div id="js-signin-page" hidden>
-                <p>Have an account?&nbsp<a href="">Sign In</a></p>   
             </div>
         </main>
     <footer>

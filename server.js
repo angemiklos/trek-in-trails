@@ -14,6 +14,7 @@ const passport = require('passport');
 // console.log(bobby); // De Niro - the variable name is bobby, not robert
 const { router: usersRouter } = require('./users');
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
+const { router: hikesRouter } = require('./hikes');
 
 mongoose.Promise = global.Promise;
 
@@ -39,6 +40,7 @@ passport.use(localStrategy);
 passport.use(jwtStrategy);
 
 app.use('/api/users/', usersRouter);
+app.use('/api/hikes/', hikesRouter);
 app.use('/api/auth/', authRouter);
 app.use(express.static('public'));
 
@@ -47,6 +49,11 @@ const jwtAuth = passport.authenticate('jwt', { session: false });
 // add a static file service get
 app.get('/',(req, res) => {
   res.sendFile(__dirname + '/public/index.html');
+});
+
+// add a static file service get for the users home page
+app.get('/home',(req, res) => {
+  res.sendFile(__dirname + '/public/home.html');
 });
 
 // A protected endpoint which needs a valid JWT to access it

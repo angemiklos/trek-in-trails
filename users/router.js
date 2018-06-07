@@ -145,4 +145,13 @@ router.get('/', (req, res) => {
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 
+// return the users info for their home page
+router.get('/myAccount', (req, res) => {
+  return User.find({username})
+    .then(user => {
+      return res.status(201).json(user.serialize());
+    })
+    .catch(err => res.status(500).json({message: 'Internal server error'}));
+});
+
 module.exports = {router};

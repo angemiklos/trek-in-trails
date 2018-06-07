@@ -1,16 +1,57 @@
 var slideshowIndex = 0;
-const LOGIN_URL = "/api/auth/login"
-const NEW_USER_URL = "/api/users"
+const LOGIN_URL = "/api/auth/login";
+const NEW_USER_URL = "/api/users";
+const HOME_URL = "/home";
+const HIKES_URL = "/api/hikes";
+const USER_URL = "/myAccount"
 
-function displayHomePage(res) {
+function displayHomePage(res, isNewUser) {
     console.log("HOME PAGE");
     console.log(res);
-    // console.log("User Found: " + res.body.nickname);
-    // console.log("User Found: " + res.body.username);
-    // console.log("User Found: " + res.body.email);
-    // console.log("User Found: " + res.body.prefCity);
-    // console.log("User Found: " + res.body.prefState);
 
+    // retrieve html for home page
+    $.ajax({
+        type : "GET",
+        url  : HOME_URL,
+        success: function(data) {
+            //show content
+            console.log('Success! Home page should be displayed.');
+
+            // display for a new user - no data to get
+            if (isNewUser) {
+                //let newUser = $.parseJSON(localStorage.getItem("user"));
+                let homeHtml = `
+                <p>Hi, ${res.nickname}</p>
+                `;
+                $("#js-home").html(homeHtml);
+            
+            // display for an established user - get data
+            } else {
+                $.when(
+                    $.get(USER_URL),
+                    $.get(HIKES_URL),
+                )
+                $.done(function(user, html){
+                    //all is well. display the user personal data and hikes
+                    console.log('Success!');
+                    localStorage.setItem("user", user);
+                   // location.assign(html);
+                })
+                $.fail(function(jqXHR, textStatus, err){
+                    //show error message
+                    console.log('text status '+textStatus+', err '+err);
+                    displayError(err);
+                    
+                });
+
+            }
+        },
+        error: function(jqXHR, textStatus, err) {
+            //show error message
+            console.log('text status '+textStatus+', err '+err);
+            displayError(err);
+        }        
+    });
 }
 
 function displayError(err) {
@@ -38,13 +79,13 @@ function verifySignin() {
         data: JSON.stringify(signin),
         success: function(data) {
             //show content
-            alert('Success!');
+            console.log('Success!');
             localStorage.setItem("authToken", data.authToken)
-            displayHomePage(data);
+            displayHomePage(signin.email, false);
         },
         error: function(jqXHR, textStatus, err) {
             //show error message
-            alert('text status '+textStatus+', err '+err);
+            console.log('text status '+textStatus+', err '+err);
             displayError(err);
         }
     });
@@ -62,7 +103,7 @@ function verifySignup() {
         "prefState" : $("#js-state").val()
     };
 
-    console.log("signin is: " + 
+    console.log("signup is: " + 
                     signup.nickname + " " + 
                     signup.username + " " + 
                     signup.password + " " + 
@@ -80,12 +121,13 @@ function verifySignup() {
         data: JSON.stringify(signup),
         success: function(data) {
             //show content
-            alert('Success!');
-            displayHomePage(data);
+            console.log('Success!');
+            localStorage.setItem("user", data);
+            displayHomePage(data, true);
         },
         error: function(jqXHR, textStatus, err) {
             //show error message
-            alert('text status '+textStatus+', err '+err);
+            console.log('text status '+textStatus+', err '+err);
             displayError(err);
         }
     });

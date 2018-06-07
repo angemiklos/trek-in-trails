@@ -15,6 +15,14 @@ const HikeSchema = mongoose.Schema({
   elevation: {type: Number, default: 0}
 });
 
+HikeSchema.methods.serialize = function() {
+  return {
+    trailName:  this.trailName   || '',
+    city:       this.city        || '',
+    state:      this.state       || ''
+  };
+};
+
 const Hike = mongoose.model('Hike', HikeSchema);
 
 module.exports = {Hike};

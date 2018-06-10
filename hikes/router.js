@@ -2,11 +2,17 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const {Hike} = require('./hikes');
+const {Hike} = require('./models');
 
 const router = express.Router();
 
 const jsonParser = bodyParser.json();
+
+const passport = require('passport');
+const { router: authRouter, localStrategy, jwtStrategy } = require('../auth');
+passport.use(localStrategy);
+passport.use(jwtStrategy);
+const jwtAuth = passport.authenticate('jwt', { session: false });
 
 // Post to save a new hiking
 router.post('/', jsonParser, (req, res) => {
@@ -14,14 +20,13 @@ router.post('/', jsonParser, (req, res) => {
       return res.status(201);
 });
 
-// Never expose all your users like below in a prod application
-// we're just doing this so we have a quick way to see
-// if we're creating users. keep in mind, you can also
-// verify this in the Mongo shell.
-router.get('/', (req, res) => {
+// need to fix to send the users home page regardless of whether
+// they are a new or previous user
+router.get('/home', jwtAuth, (req, res) => {
   return Hike.find()
     .then(hikes => res.json(hikes.map(hike => hike.serialize())))
     .catch(err => res.status(500).json({message: 'Internal server error'}));
+    //   res.sendFile(__dirname + '/public/home.html');
 });
 
 module.exports = {router};

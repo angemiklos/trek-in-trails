@@ -3,11 +3,12 @@ const LOGIN_URL = "/api/auth/login";
 const NEW_USER_URL = "/api/users";
 const HOME_URL = "/home";
 const HIKES_URL = "/api/hikes";
-const USER_URL = "/myAccount"
+const USER_URL = "/myAccount";
 
 function displayHomePage(res, isNewUser) {
     console.log("HOME PAGE");
     console.log(res);
+    console.log(isNewUser);
 
     // retrieve html for home page
     $.ajax({

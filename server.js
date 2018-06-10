@@ -7,14 +7,9 @@ const passport = require('passport');
 
 // Here we use destructuring assignment with renaming so the two variables
 // called router (from ./users and ./auth) have different names
-// For example:
-// const actorSurnames = { james: "Stewart", robert: "De Niro" };
-// const { james: jimmy, robert: bobby } = actorSurnames;
-// console.log(jimmy); // Stewart - the variable name is jimmy, not james
-// console.log(bobby); // De Niro - the variable name is bobby, not robert
 const { router: usersRouter } = require('./users');
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
-const { router: hikesRouter } = require('./hikes');
+// const { router: hikesRouter } = require('./hikes');
 
 mongoose.Promise = global.Promise;
 
@@ -40,20 +35,15 @@ passport.use(localStrategy);
 passport.use(jwtStrategy);
 
 app.use('/api/users/', usersRouter);
-app.use('/api/hikes/', hikesRouter);
 app.use('/api/auth/', authRouter);
 app.use(express.static('public'));
+//app.use('/api/hikes/', hikesRouter);
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 // add a static file service get
 app.get('/',(req, res) => {
   res.sendFile(__dirname + '/public/index.html');
-});
-
-// add a static file service get for the users home page
-app.get('/home',(req, res) => {
-  res.sendFile(__dirname + '/public/home.html');
 });
 
 // A protected endpoint which needs a valid JWT to access it

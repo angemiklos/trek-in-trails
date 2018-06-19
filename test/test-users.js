@@ -14,7 +14,7 @@ const expect = chai.expect;
 // see: https://github.com/chaijs/chai-http
 chai.use(chaiHttp);
 
-describe('/api/user', function () {
+describe('/api/user', () => {
   const nickname = 'exampleName';
   const username = 'exampleUser@gmail.com';
   const email = 'exampleUser@gmail.com';
@@ -28,23 +28,23 @@ describe('/api/user', function () {
   const prefCityB = 'Denver';
   const prefStateB = 'Colorado';
 
-  before(function () {
+  before(() => {
     return runServer(TEST_DATABASE_URL);
   });
 
-  after(function () {
+  after(() => {
     return closeServer();
   });
 
-  beforeEach(function () { });
+  beforeEach(() => { });
 
-  afterEach(function () {
+  afterEach(() => {
     return User.remove({});
   });
 
-  describe('/api/users', function () {
-    describe('POST', function () {
-      it('Should reject users with missing username', function () {
+  describe('/api/users', () => {
+    describe('POST', () => {
+      it('Should reject users with missing username', () => {
         return chai
           .request(app)
           .post('/api/users')
@@ -69,7 +69,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('username');
           });
       });
-      it('Should reject users with missing password', function () {
+      it('Should reject users with missing password', () => {
         return chai
           .request(app)
           .post('/api/users')
@@ -94,7 +94,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('password');
           });
       });
-      it('Should reject users with non-string username', function () {
+      it('Should reject users with non-string username', () => {
         return chai
           .request(app)
           .post('/api/users')
@@ -122,7 +122,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('username');
           });
       });
-      it('Should reject users with non-string password', function () {
+      it('Should reject users with non-string password', () => {
         return chai
           .request(app)
           .post('/api/users')
@@ -150,7 +150,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('password');
           });
       });
-      it('Should reject users with non-string nickname', function () {
+      it('Should reject users with non-string first name', () => {
         return chai
           .request(app)
           .post('/api/users')
@@ -178,7 +178,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('nickname');
           });
       });
-      it('Should reject users with non-string city name', function () {
+      it('Should reject users with non-string city name', () => {
         return chai
           .request(app)
           .post('/api/users')
@@ -206,7 +206,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('prefCity');
           });
       });
-      it('Should reject users with non-trimmed username', function () {
+      it('Should reject users with non-trimmed username', () => {
         return chai
           .request(app)
           .post('/api/users')
@@ -234,7 +234,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('username');
           });
       });
-      it('Should reject users with non-trimmed password', function () {
+      it('Should reject users with non-trimmed password', () => {
         return chai
           .request(app)
           .post('/api/users')
@@ -262,7 +262,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('password');
           });
       });
-      it('Should reject users with empty username', function () {
+      it('Should reject users with empty username', () => {
         return chai
           .request(app)
           .post('/api/users')
@@ -290,7 +290,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('username');
           });
       });
-      it('Should reject users with password less than six characters', function () {
+      it('Should reject users with password less than six characters',() => {
         return chai
           .request(app)
           .post('/api/users')
@@ -318,7 +318,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('password');
           });
       });
-      it('Should reject users with password greater than 12 characters', function () {
+      it('Should reject users with password greater than 12 characters', () => {
         return chai
           .request(app)
           .post('/api/users')
@@ -346,7 +346,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('password');
           });
       });
-      it('Should reject users with duplicate username', function () {
+      it('Should reject users with duplicate username', () => {
         // Create an initial user
         return User.create({
           nickname,
@@ -383,7 +383,7 @@ describe('/api/user', function () {
             expect(res.body.location).to.equal('username');
           });
       });
-      it('Should create a new user', function () {
+      it('Should create a new user', () => {
         return chai
           .request(app)
           .post('/api/users')
@@ -462,15 +462,15 @@ describe('/api/user', function () {
       });
     });
 
-    describe('GET', function () {
-      it('Should return an empty array initially', function () {
+    describe('GET', () => {
+      it('Should return an empty array initially', () => {
         return chai.request(app).get('/api/users').then(res => {
           expect(res).to.have.status(200);
           expect(res.body).to.be.an('array');
           expect(res.body).to.have.length(0);
         });
       });
-      it('Should return an array of users', function () {
+      it('Should return an array of users', () => {
         return User.create(
           {
             nickname,

@@ -1,5 +1,6 @@
 'use strict';
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
@@ -7,9 +8,9 @@ const passport = require('passport');
 
 // Here we use destructuring assignment with renaming so the two variables
 // called router (from ./users and ./auth) have different names
-const { router: usersRouter } = require('./users');
+//const { router: hikesRouter } = require('./hikes');
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
-// const { router: hikesRouter } = require('./hikes');
+const { router: usersRouter } = require('./users');
 
 mongoose.Promise = global.Promise;
 
@@ -19,6 +20,9 @@ const app = express();
 
 // Logging
 app.use(morgan('common'));
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 // CORS
 app.use(function (req, res, next) {
@@ -36,15 +40,9 @@ passport.use(jwtStrategy);
 
 app.use('/api/users/', usersRouter);
 app.use('/api/auth/', authRouter);
-app.use(express.static('public'));
 //app.use('/api/hikes/', hikesRouter);
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
-
-// add a static file service get
-app.get('/',(req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
-});
 
 // A protected endpoint which needs a valid JWT to access it
 app.get('/api/protected', jwtAuth, (req, res) => {

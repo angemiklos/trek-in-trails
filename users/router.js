@@ -10,7 +10,7 @@ const jsonParser = bodyParser.json();
 
 // Post to register a new user
 router.post('/', jsonParser, (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
   const requiredFields = ['nickname', 'username', 'password'];
   const missingField = requiredFields.find(field => !(field in req.body));
 
@@ -97,7 +97,7 @@ router.post('/', jsonParser, (req, res) => {
   let {nickname, username, password, email=username, prefCity='', prefState} = req.body;
   prefCity = prefCity.trim();
 
-  return User.find({username})
+  return User.find({ username })
     .count()
     .then(count => {
       if (count > 0) {
@@ -131,7 +131,7 @@ router.post('/', jsonParser, (req, res) => {
       if (err.reason === 'ValidationError') {
         return res.status(err.code).json(err);
       }
-      res.status(500).json({code: 500, message: 'Internal server error'});
+      res.status(500).json({ code: 500, message: 'Internal server error' });
     });
 });
 
@@ -142,7 +142,7 @@ router.post('/', jsonParser, (req, res) => {
 router.get('/', (req, res) => {
   return User.find()
     .then(users => res.json(users.map(user => user.serialize())))
-    .catch(err => res.status(500).json({message: 'Internal server error'}));
+    .catch(err => res.status(500).json({ message: 'Internal server error' }));
 });
 
 // return the users info for their home page
@@ -154,4 +154,4 @@ router.get('/myAccount', (req, res) => {
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 
-module.exports = {router};
+module.exports = { router };

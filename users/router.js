@@ -1,12 +1,14 @@
 'use strict';
 const express = require('express');
 const bodyParser = require('body-parser');
+const passport = require('passport');
 
-const {User} = require('./models');
+const { User } = require('./models');
 
 const router = express.Router();
 
 const jsonParser = bodyParser.json();
+const jwtAuth = passport.authenticate('jwt', { session: false });
 
 // Post to register a new user
 router.post('/', jsonParser, (req, res) => {
@@ -70,12 +72,12 @@ router.post('/', jsonParser, (req, res) => {
   const tooSmallField = Object.keys(sizedFields).find(
     field =>
       'min' in sizedFields[field] &&
-            req.body[field].trim().length < sizedFields[field].min
+      req.body[field].trim().length < sizedFields[field].min
   );
   const tooLargeField = Object.keys(sizedFields).find(
     field =>
       'max' in sizedFields[field] &&
-            req.body[field].trim().length > sizedFields[field].max
+      req.body[field].trim().length > sizedFields[field].max
   );
 
   if (tooSmallField || tooLargeField) {
@@ -145,13 +147,12 @@ router.get('/', (req, res) => {
     .catch(err => res.status(500).json({ message: 'Internal server error' }));
 });
 
-// return the users info for their home page
-router.get('/myAccount', (req, res) => {
-  return User.find({username})
-    .then(user => {
-      return res.status(201).json(user.serialize());
-    })
-    .catch(err => res.status(500).json({message: 'Internal server error'}));
+// Get all user data
+router.get('/:user', jwtAuth, (req, res) => {
+  return User.find({user: req.params.username})
+    .then(users => res.status(200).json(users.map(user => user.serialize())))
+    .catch(err => res.status(500).json({ message: 'Internal server error' }));
+  
 });
 
 module.exports = { router };

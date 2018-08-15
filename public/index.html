@@ -18,7 +18,7 @@
         <h2><em>keep track of all your favorite hikes</em></h2>
     </div>
     <main>
-        <div class="col-12" aria-live="polite">
+        <div class="col-12" id="js-landing" aria-live="polite">
             <img class="bkg-images" src="images/FromCell 097.jpg" alt="hikers 1">
             <img class="bkg-images" src="images/0531101347.jpg" alt="hikers 2">
             <img class="bkg-images" src="images/p151.jpg" alt="hikers 3">
@@ -31,7 +31,7 @@
             </div>
             <div>
                 <form action="" id="js-signin">
-                    <fieldset>
+                    <fieldset id="js-fs-signin">
                         <legend>Sign In</legend>
                         E-mail:<br>
                         <input type="email" name="username" placeholder="email address" autocomplete="off" required><br>
@@ -116,9 +116,11 @@
                     </div>
                 </form>  
             </div>
-        </main>
-    <footer>
-        
+        </div>
+        <div class="col-12" id="js-home" aria-live="polite" hidden></div>
+        <div class="col-12" id="js-new-hike" aria-live="polite" hidden></div>
+    </main>
+    <footer>       
     </footer>
     
 </body>

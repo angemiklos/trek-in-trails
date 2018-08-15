@@ -1,4 +1,5 @@
 'use strict';
+
 require('dotenv').config();
 const path = require('path');
 const express = require('express');
@@ -8,9 +9,9 @@ const passport = require('passport');
 
 // Here we use destructuring assignment with renaming so the two variables
 // called router (from ./users and ./auth) have different names
-//const { router: hikesRouter } = require('./hikes');
-const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
+const { router: hikesRouter } = require('./hikes');
 const { router: usersRouter } = require('./users');
+const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 
 mongoose.Promise = global.Promise;
 
@@ -40,7 +41,7 @@ passport.use(jwtStrategy);
 
 app.use('/api/users/', usersRouter);
 app.use('/api/auth/', authRouter);
-//app.use('/api/hikes/', hikesRouter);
+app.use('/api/hikes/', hikesRouter);
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
 

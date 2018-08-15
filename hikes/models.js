@@ -1,10 +1,14 @@
 'use strict';
+
+const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
 const HikeSchema = mongoose.Schema({
-  trailName:     {type: String, required: true, unique: true}//,
+  trailName: { type: String, required: true, unique: true },
+  owner: { type: String, required: true },
+  visibility: { type: String, enum: ['public', 'private'], default: 'private' }
 //  location:      {type: String, required: true},
 //  difficulty:    {type: String, required: true},
 //  city:          {type: String, required: true},
@@ -17,7 +21,9 @@ const HikeSchema = mongoose.Schema({
 
 HikeSchema.methods.serialize = function() {
   return {
-    trailName:  this.trailName  // || '',
+    trailName: this.trailName || '',
+    owner: this.owner || '',
+    visibility: this.visibility
 //    city:       this.city        || '',
 //    state:      this.state       || ''
   };
@@ -25,4 +31,4 @@ HikeSchema.methods.serialize = function() {
 
 const Hike = mongoose.model('Hike', HikeSchema);
 
-module.exports = {Hike};
+module.exports = { Hike };

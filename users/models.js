@@ -13,13 +13,13 @@ const UserSchema = mongoose.Schema({
   prefState: {type: String, default: ''}
 });
 
-UserSchema.methods.serialize = function() {
+UserSchema.methods.serialize = function () {
   return {
     nickname:  this.nickname   || '',
     username:  this.username   || '',
-    email:     this.email      || '',
-    prefCity:  this.prefCity   || '',
-    prefState: this.prefState  || ''
+    email:     this.email,
+    prefCity:  this.prefCity,
+    prefState: this.prefState
   };
 };
 

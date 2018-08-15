@@ -1,75 +1,97 @@
 var slideshowIndex = 0;
 const LOGIN_URL = "/api/auth/login";
 const NEW_USER_URL = "/api/users";
-const HOME_URL = "/home";
-const HIKES_URL = "/api/hikes";
-const USER_URL = "/myAccount";
+const HOME_URL = "/api/hikes/";
+const USER_URL = "/api/users/";
 
-function displayHomePage(res, isNewUser) {
+function getHomeData(url, user) {
+
+    console.log("here's the url: " + url + user);
+    console.log("data is set to: " + JSON.stringify(user));
+    let token = localStorage.getItem("authToken");
+    console.log("check: " + token);
+    return $.ajax({
+      url: url + user,
+      type: 'get',
+      dataType: 'json',
+      data: JSON.stringify({username : user}),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("authToken")
+      },
+    })
+    .always(function(res) {
+      // display an empty home page?
+      console.log("this is res: " + JSON.stringify(res));
+    })
+    .fail(function(jqXHR, textStatus, err) {
+      // handle request failures
+      console.log('text status '+textStatus+', err '+err);
+      displayError(err);
+    });
+  
+}
+    
+  function displayHomePage(res, isNewUser) {
+    let user = localStorage.getItem('user');
     console.log("HOME PAGE");
     console.log(res);
     console.log(isNewUser);
 
-    // retrieve html for home page
-    $.ajax({
-        type : "GET",
-        url  : HOME_URL,
-        success: function(data) {
-            //show content
+    // load the empty home page
+    $("#js-landing").prop('hidden',true);
+    $("#js-home").prop('hidden',false).load("home.html");
+
+    // display for a new user - no data to get
+    if (isNewUser) {
+        //let newUser = $.parseJSON(localStorage.getItem("user"));
+        let homeHtml = `
+        <h2>Hi, ${res.nickname}</h2>
+        `;
+        $("#js-greetings").html(homeHtml);
+    
+    // display for an established user - get data
+    } else {
+        getHomeData(HOME_URL, res).done(function(data) {
             console.log('Success! Home page should be displayed.');
-
-            // display for a new user - no data to get
-            if (isNewUser) {
-                //let newUser = $.parseJSON(localStorage.getItem("user"));
-                let homeHtml = `
-                <p>Hi, ${res.nickname}</p>
-                `;
-                $("#js-home").html(homeHtml);
-            
-            // display for an established user - get data
-            } else {
-                $.when(
-                    $.get(USER_URL),
-                    $.get(HIKES_URL),
-                )
-                $.done(function(user, html){
-                    //all is well. display the user personal data and hikes
-                    console.log('Success!');
-                    localStorage.setItem("user", user);
-                   // location.assign(html);
-                })
-                $.fail(function(jqXHR, textStatus, err){
-                    //show error message
-                    console.log('text status '+textStatus+', err '+err);
-                    displayError(err);
-                    
-                });
-
-            }
-        },
-        error: function(jqXHR, textStatus, err) {
-            //show error message
-            console.log('text status '+textStatus+', err '+err);
-            displayError(err);
-        }        
-    });
+            console.log('data is: ' + JSON.stringify(data));
+        });
+          
+        getHomeData(USER_URL, res).done(function(data) {
+            console.log('Success! User data should be displayed.');
+            console.log('data is: ' + JSON.stringify(data));
+            localStorage.setItem("user", JSON.stringify(data));
+        });
+    }
 }
 
 function displayError(err) {
-    console.log("ERROR!  ERROR! " + err);
+    console.log("The error you are getting is: " + err);
+    var errHtml = "Sorry - unknown issue.  Try again.";
+    if (localStorage.getItem("errorDisplayed") == "false") {
+        if (err === "Unauthorized") {
+            errHtml = `<div class="js-error"><p class="js-err-msg">Username or password is incorrect</p></div>`;
+        }
+        $("#js-fs-signin").after(errHtml);
+        localStorage.setItem("errorDisplayed", true);
+    }
+}
+
+function clearErrors(){
+    $(".js-error").remove();
+    localStorage.setItem("errorDisplayed", false);
 }
 
 function verifySignin() {
     event.preventDefault();
     event.stopPropagation();
-
-    
+ 
     let signin = {
             "username" : $("[type='email']").val(),
             "password" : $("[type='password']").val()
     };
 
-    console.log("signin is: " + signin.email + " " + signin.password);
+    console.log("signin is: " + signin.username + " " + signin.password);
 
     $.ajax({
         type: "POST",
@@ -80,9 +102,9 @@ function verifySignin() {
         data: JSON.stringify(signin),
         success: function(data) {
             //show content
-            console.log('Success!');
+            console.log('Success! for: ' + signin.username);
             localStorage.setItem("authToken", data.authToken)
-            displayHomePage(signin.email, false);
+            displayHomePage(signin.username, false);
         },
         error: function(jqXHR, textStatus, err) {
             //show error message
@@ -185,6 +207,10 @@ function main() {
 
     // when the sign up page is requested, display it
     $("#js-signup-page").on("click", displaySignup);
+
+    // on keypress, clear all errors
+    $("[type='password']").on("keypress", clearErrors);
+    $("[type='email']").on("keypress", clearErrors);
 }
 
 $(main);
